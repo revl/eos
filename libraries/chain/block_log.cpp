@@ -10,9 +10,6 @@
 #include <algorithm>
 #include <variant>
 
-#define LOG_WRITE_C "ab+"
-#define LOG_RW_C "rb+"
-
 namespace eosio { namespace chain {
 
    const uint32_t block_log::min_supported_version = 1;
@@ -190,13 +187,13 @@ namespace eosio { namespace chain {
 
                // open to create files if they don't exist
                //ilog("Opening block log at ${path}", ("path", my->block_file.generic_string()));
-               block_file.open( LOG_WRITE_C );
-               index_file.open( LOG_WRITE_C );
+               block_file.open( fc::cfile::create_or_update_rw_mode );
+               index_file.open( fc::cfile::create_or_update_rw_mode );
 
                close();
 
-               block_file.open( LOG_RW_C );
-               index_file.open( LOG_RW_C );
+               block_file.open( fc::cfile::update_rw_mode );
+               index_file.open( fc::cfile::update_rw_mode );
 
                open_files = true;
             }
@@ -775,7 +772,7 @@ namespace {
       if (!fc::exists(tail_path)) {
          fc::cfile tail;
          tail.set_file_path(tail_path);
-         tail.open(LOG_WRITE_C);
+         tail.open(fc::cfile::create_or_update_rw_mode);
          tail.write(start, size);
 
          ilog("Data at tail end of block log which should contain the (incomplete) serialization of block ${num} "
@@ -850,7 +847,7 @@ namespace {
 
       fc::cfile new_block_file;
       new_block_file.set_file_path(block_log_path);
-      new_block_file.open(LOG_WRITE_C);
+      new_block_file.open(fc::cfile::create_or_update_rw_mode);
       new_block_file.write(log_data.data(), pos);
 
       if (error_msg.size()) {
