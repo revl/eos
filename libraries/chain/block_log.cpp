@@ -755,12 +755,11 @@ namespace {
                   "previous", previous_block_id));
       }
 
-      if (previous_block_id !=  block_id_type() && previous_block_id != header.previous) {
+      if (previous_block_id != block_id_type() && previous_block_id != header.previous) {
          elog("Block ${num} (${id}) does not link back to previous block. "
             "Expected previous: ${expected}. Actual previous: ${actual}.",
             ("num", block_num)("id", id)("expected", previous_block_id)("actual", header.previous));
       }
-      
 
       uint64_t tmp_pos = std::numeric_limits<uint64_t>::max();
       if (ds.remaining() >= sizeof(tmp_pos)) {
